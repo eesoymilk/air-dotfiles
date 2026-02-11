@@ -116,8 +116,8 @@ Tiling window manager for macOS that doesn't require disabling SIP or other hack
 
 ### 🛠️ Essential Tools
 ```bash
-# Package manager and version managers 📦
-brew install nvm pnpm
+# Dotfiles manager & version managers 📦
+brew install stow nvm pnpm
 
 # Terminal tools 🔧
 brew install fzf zoxide eza yazi neovim gh
@@ -135,38 +135,30 @@ brew install jandedobbeleer/oh-my-posh/oh-my-posh
 
 ## 🚀 Installation
 
-### ⚡ The Quick Way (YOLO)
+### ⚡ Using GNU Stow (Recommended)
 
-```bash
-git clone https://github.com/yourusername/air-dotfiles.git ~/air-dotfiles
-cd ~/air-dotfiles
-cp .zshrc ~/.zshrc
-cp -r .config/* ~/.config/
-source ~/.zshrc
-```
-
-### 🛡️ The Safe Way (Recommended)
+[GNU Stow](https://www.gnu.org/software/stow/) automatically creates symlinks mirroring the repo structure into your home directory. No manual `ln` commands needed.
 
 ```bash
 # Clone the repo
 git clone https://github.com/yourusername/air-dotfiles.git ~/air-dotfiles
 cd ~/air-dotfiles
 
-# Backup existing configs
+# Backup existing configs (if any)
 mkdir -p ~/dotfiles-backup
 cp ~/.zshrc ~/dotfiles-backup/ 2>/dev/null
 cp -r ~/.config ~/dotfiles-backup/ 2>/dev/null
 
-# Symlink configs (so you can pull updates easily)
-ln -sf ~/air-dotfiles/.zshrc ~/.zshrc
-ln -sf ~/air-dotfiles/.config/nvim ~/.config/nvim
-ln -sf ~/air-dotfiles/.config/ghostty ~/.config/ghostty
-ln -sf ~/air-dotfiles/.config/aerospace ~/.config/aerospace
-ln -sf ~/air-dotfiles/.config/ohmyposh ~/.config/ohmyposh
-ln -sf ~/air-dotfiles/.config/git ~/.config/git
+# Stow everything — creates symlinks in ~
+stow -t ~ .
 
 # Source your new shell config
 source ~/.zshrc
+```
+
+To remove all symlinks later:
+```bash
+cd ~/air-dotfiles && stow -t ~ -D .
 ```
 
 ### 🎬 Post-Installation
