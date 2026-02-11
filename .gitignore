@@ -1,0 +1,5 @@
+# Credentials and tokens
+.config/gcloud/
+.config/gh/hosts.yml
+.config/github-copilot/
+.config/configstore/
