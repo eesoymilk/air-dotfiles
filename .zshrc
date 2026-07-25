@@ -75,6 +75,9 @@ alias lla='eza -la --color=always --icons=always'
 alias lt='eza --tree --color=always --icons=always'
 alias lgi='eza -la --color=always --icons=always --git-ignore'
 alias ltgi='eza --tree --color=always --icons=always --git-ignore'
+alias cat='bat'
+alias lg='lazygit'
+alias lzd='lazydocker'
 alias vim='nvim'
 alias c='clear'
 alias gs='git status'
@@ -83,6 +86,7 @@ alias ga='git add'
 alias gac='git commit -am'
 alias gc='git commit'
 alias gp='git push'
+alias tms='tmux-sessionizer'
 
 # Shell integrations
 eval "$(fzf --zsh)"
@@ -114,3 +118,16 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
+
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'micromamba shell init' !!
+export MAMBA_EXE='/Users/soymilk/.local/bin/micromamba';
+export MAMBA_ROOT_PREFIX='/Users/soymilk/Codes/direct-flow/y';
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    alias micromamba="$MAMBA_EXE"  # Fallback on help from micromamba activate
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
