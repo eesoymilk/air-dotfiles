@@ -10,3 +10,4 @@
 
 # vercel plugin runtime state
 .config/vercel-plugin/
+.claude/settings.local.json
