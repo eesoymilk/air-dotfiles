@@ -1,12 +1,6 @@
 return {
   {
-    "VonHeikemen/lsp-zero.nvim",
-    branch = "v4.x",
-    lazy = true,
-    config = false,
-  },
-  {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     lazy = false,
     config = true,
   },
@@ -19,7 +13,7 @@ return {
     config = function()
       local cmp = require("cmp")
       local lspkind = require("lspkind")
-      local cmp_action = require("lsp-zero").cmp_action()
+      local luasnip = require("luasnip")
 
       local has_words_before = function()
         if vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt" then
@@ -34,13 +28,11 @@ return {
         sources = {
           { name = "nvim_lsp" },
           { name = "luasnip" },
-          { name = "copilot" },
         },
         formatting = {
           format = lspkind.cmp_format({
             mode = "symbol",
             max_width = 50,
-            symbol_map = { Copilot = "" },
           }),
         },
         mapping = cmp.mapping.preset.insert({
@@ -52,8 +44,20 @@ return {
           }),
           ["<C-u>"] = cmp.mapping.scroll_docs(-4),
           ["<C-d>"] = cmp.mapping.scroll_docs(4),
-          ["<C-f>"] = cmp_action.luasnip_jump_forward(),
-          ["<C-b>"] = cmp_action.luasnip_jump_backward(),
+          ["<C-f>"] = cmp.mapping(function(fallback)
+            if luasnip.locally_jumpable(1) then
+              luasnip.jump(1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          ["<C-b>"] = cmp.mapping(function(fallback)
+            if luasnip.locally_jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
           ["<C-l>"] = cmp.mapping.complete(),
           ["<C-j>"] = function(fallback)
             if cmp.visible() then
@@ -96,22 +100,24 @@ return {
     cmd = { "LspInfo", "LspInstall", "LspStart" },
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
       "hrsh7th/cmp-nvim-lsp",
-      "williamboman/mason-lspconfig.nvim",
+      "mason-org/mason-lspconfig.nvim",
       "kevinhwang91/nvim-ufo",
-      "aznhe21/actions-preview.nvim",
     },
-    opts = { inlay_hints = { enable = true } },
     config = function()
-      -- This is where all the LSP shenanigans will live
-      local lsp_zero = require("lsp-zero")
+      vim.diagnostic.config({
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "✘",
+            [vim.diagnostic.severity.WARN] = "▲",
+            [vim.diagnostic.severity.HINT] = "⚑",
+            [vim.diagnostic.severity.INFO] = "»",
+          },
+        },
+      })
 
-      local lsp_attach = function(client, bufnr)
-        lsp_zero.default_keymaps({ buffer = bufnr })
-      end
-
-      local lsp_capabilities = vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), {
+      local capabilities = vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), {
         textDocument = {
           foldingRange = {
             dynamicRegistration = false,
@@ -120,48 +126,25 @@ return {
         },
       })
 
-      lsp_zero.extend_lspconfig({
-        sign_text = {
-          error = "✘",
-          warn = "▲",
-          hint = "⚑",
-          info = "»",
+      vim.lsp.config("*", { capabilities = capabilities })
+      vim.lsp.config("tailwindcss", {
+        root_markers = { ".git" },
+      })
+      vim.lsp.config("ts_ls", {
+        root_markers = { ".git" },
+        workspace_required = true,
+      })
+      vim.lsp.config("tinymist", {
+        settings = {
+          exportPdf = "onType",
+          formatterMode = "typstyle",
         },
-        lsp_attach = lsp_attach,
-        capabilities = lsp_capabilities,
       })
 
       require("mason").setup({})
+      -- mason-lspconfig v2 auto-enables installed servers via vim.lsp.enable()
       require("mason-lspconfig").setup({
         ensure_installed = { "tinymist", "pyright", "ruff" },
-        handlers = {
-          function(server_name)
-            require("lspconfig")[server_name].setup({})
-          end,
-          tailwindcss = function()
-            require("lspconfig").tailwindcss.setup({
-              root_dir = function(...)
-                return require("lspconfig.util").root_pattern(".git")(...)
-              end,
-            })
-          end,
-          ts_ls = function()
-            require("lspconfig").ts_ls.setup({
-              root_dir = function(...)
-                return require("lspconfig.util").root_pattern(".git")(...)
-              end,
-              single_file_support = false,
-            })
-          end,
-          tinymist = function()
-            require("lspconfig").tinymist.setup({
-              settings = {
-                exportPdf = "onType",
-                formatterMode = "typstyle",
-              },
-            })
-          end,
-        },
       })
     end,
   },

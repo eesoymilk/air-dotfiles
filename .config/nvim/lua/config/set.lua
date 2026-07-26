@@ -18,6 +18,8 @@ vim.opt.title = true
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.wrap = true
+vim.opt.linebreak = true
+vim.opt.breakindent = true
 
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -37,7 +39,6 @@ vim.opt.colorcolumn = { "80", "100", "120" }
 vim.opt.mouse = "a"
 vim.opt.mousemoveevent = true
 
-vim.g.copilot_assume_mapped = true
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
