@@ -4,6 +4,9 @@
 .config/github-copilot/
 .config/configstore/
 
+# uv self-update receipt: machine-local install bookkeeping, not config
+.config/uv/
+
 # tmux: TPM clones plugins here at runtime; keep dir present via .gitkeep
 .config/tmux/plugins/*
 !.config/tmux/plugins/.gitkeep
