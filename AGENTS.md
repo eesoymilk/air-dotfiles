@@ -5,6 +5,7 @@ Common instructions for soymilk's agents across all scenarios.
 ## Guidelines
 
 - Never use the em dash "—". Use plain dash "-" instead.
+- Never commit unless explicitly asked.
 - Never auto-add your agent name as co-author in commit messages.
 - Never modify CHANGELOG.md or auto-generated files.
 - In long Markdown files, put each full sentence on its own line.
